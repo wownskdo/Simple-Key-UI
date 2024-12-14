@@ -1,0 +1,981 @@
+print("by: Panda Hub\nDevelopers:\nPandaExploits\nRedxyz")
+-- By: PandaExploits
+-- Discord Server: https://discord.com/invite/B3CeTvU7vv
+-- start
+local shared = {}
+getgenv().AsciiKeys = {['a'] = 0x41,['b'] = 0x42,['c'] = 0x43,['d'] = 0x44,['e'] = 0x45,['f'] = 0x46,['g'] = 0x47,['h'] = 0x48,['i'] = 0x49,['j'] = 0x4A,['k'] = 0x4B,['l'] = 0x4C,['m'] = 0x4D,['n'] = 0x4E,['o'] = 0x4F,['p'] = 0x50,['q'] = 0x51,['r'] = 0x52,['s'] = 0x53,['t'] = 0x54,['u'] = 0x55,['v'] = 0x56,['w'] = 0x57,['x'] = 0x58,['y'] = 0x59,['z'] = 0x5A,['0'] = 0x30,['1'] = 0x31,['2'] = 0x32,['3'] = 0x33,['4'] = 0x34,['5'] = 0x35,['6'] = 0x36,['7'] = 0x37,['8'] = 0x38,['9'] = 0x39,}
+local config = { delay = 0.2, enabled = true, paused = false, tempo = 10 }
+local currentNoteIndex = 1
+local textBox -- Reference to the TextBox for entering the sheet
+local Tempo -- Reference to the TextBox for tempo
+local isPlaying = false
+
+function pressKey(key)
+local shiftKeyCode = 0x10 
+local keyCode = AsciiKeys[key:lower()] 
+
+if keyCode then
+if key == key:lower() then
+keypress(keyCode)
+keyrelease(keyCode)
+else
+keypress(shiftKeyCode) 
+keypress(keyCode) 
+keyrelease(keyCode)
+keyrelease(shiftKeyCode) 
+end
+else
+local symbolKeyCodes = {
+["!"] = 0x31,
+["@"] = 0x32,
+["#"] = 0x33,
+["$"] = 0x34,
+["%"] = 0x35,
+["^"] = 0x36,
+["&"] = 0x37,
+["*"] = 0x38,
+["("] = 0x39,
+[")"] = 0x30
+}
+
+local symbolKeyCode = symbolKeyCodes[key]
+
+if symbolKeyCode then
+keypress(shiftKeyCode) 
+keypress(symbolKeyCode) 
+keyrelease(symbolKeyCode)
+keyrelease(shiftKeyCode) 
+end
+end
+end
+
+function parseSong(notes)
+local finalNotesList = {}
+local curNote = ""
+local inBracket = false
+
+for char in notes:gmatch(".") do
+if char == "[" then
+inBracket = true
+elseif char == "]" then
+inBracket = false
+finalNotesList[#finalNotesList + 1] = curNote
+curNote = ""
+elseif inBracket then
+curNote = curNote .. char
+else
+finalNotesList[#finalNotesList + 1] = char
+end
+end
+
+return finalNotesList
+end
+
+function playSingleIteration(notes)
+for i = currentNoteIndex, #notes do
+local v = notes[i]
+
+if v ~= "|" and v ~= " " then
+if #v > 1 then
+for _, char in pairs(v:split("")) do
+xpcall(function()
+pressKey(char)
+end, function()
+end)
+end
+else
+xpcall(function()
+pressKey(v)
+end, function()
+end)
+end
+end
+
+if v == "|" then
+task.wait(config.delay + (config.delay * 0.57))
+elseif v == " " then
+task.wait(config.delay + (config.delay * 0.1))
+elseif v == "-" then
+task.wait(config.delay + (config.delay * 0.57))
+elseif v == "\n" then
+task.wait(config.delay / 1.5)
+else
+task.wait(config.delay / 1.1)
+end
+
+if not config.enabled then return end
+
+-- Check for pause
+if config.paused then
+while config.paused do
+task.wait() 
+end
+end
+end
+end
+
+
+-- Folder
+print("Credits: Panda Hub")
+local httpservice = game:GetService("HttpService")
+
+if isfolder("PandaHubbS") == false then
+makefolder("PandaHubbS")
+end
+
+if isfile("PandaHubbS/Sheets.txt") == false then
+writefile("PandaHubbS/Sheets.txt", "[]")
+end
+
+getgenv().Sheets = httpservice:JSONDecode(readfile("PandaHubbS/Sheets.txt"))
+
+for i,v in pairs(Sheets) do
+	game:GetService("StarterGui"):SetCore("SendNotification", {
+Title = "Panda Song Loader",
+Text = "Loaded Song: " .. v.songName,
+Duration = 0.5,
+})
+end
+
+function refreshList(list)
+local SheetsToAdd = {}
+for i,v in pairs(Sheets) do
+table.insert(SheetsToAdd, v.songName)
+end
+
+list:Refresh(SheetsToAdd, true)
+end
+-- Main
+local customsheet = Instance.new("ScreenGui")
+local main = Instance.new("Frame")
+local Ask = Instance.new("ImageLabel")
+local label = Instance.new("TextLabel")
+local List = Instance.new("ScrollingFrame")
+local UIGridLayout = Instance.new("UIGridLayout")
+local Sheet = Instance.new("TextBox")
+local Tempo = Instance.new("TextBox")
+local Play = Instance.new("TextButton")
+local Stop = Instance.new("TextButton")
+local Pause = Instance.new("TextButton")
+local ListM = Instance.new("TextButton")
+local Add = Instance.new("TextButton")
+local Remove = Instance.new("TextButton")
+local MusicBar = Instance.new("TextButton")
+local SongBar = Instance.new("TextBox")
+local NameLabel = Instance.new("TextLabel")
+local Addition = Instance.new("TextButton")
+local Substract = Instance.new("TextButton")
+local SubAdd = Instance.new("TextBox")
+local totalButtons = 0
+--Properties:
+
+customsheet.Name = "customsheet"
+customsheet.Parent = game.CoreGui
+customsheet.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+--main
+main.Name = "main"
+main.Parent = customsheet
+main.BackgroundColor3 = Color3.fromRGB(83, 83, 83)
+main.Position = UDim2.new(0.32929045, 0, 0.339805812, 0)
+main.Size = UDim2.new(0, 328, 0, 250)
+main.Active = true
+main.Draggable = true
+
+Ask.Name = "Ask"
+Ask.Parent = main
+Ask.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Ask.BackgroundTransparency = 1.000
+Ask.Position = UDim2.new(0, 0, 0, 0)
+Ask.Size = UDim2.new(0, 328, 0, 250)
+Ask.Image = "http://www.roblox.com/asset/?id=11919323374"
+
+label.Name = "label"
+label.Parent = main
+label.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+label.Size = UDim2.new(0, 308, 0, 30)
+label.Font = Enum.Font.SourceSans
+label.Text = "Virtual Sheet Player v1.5.2 (Test)"
+label.TextColor3 = Color3.fromRGB(255, 255, 255)
+label.TextSize = 25
+label.TextWrapped = true
+
+local UICorner0 = Instance.new("UICorner")
+UICorner0.Parent = Ask
+UICorner0.CornerRadius = UDim.new(0, 8)
+
+local UICorner = Instance.new("UICorner")
+UICorner.Parent = main
+UICorner.CornerRadius = UDim.new(0, 8)
+
+local UICorner2 = Instance.new("UICorner")
+UICorner2.Parent = label
+UICorner2.CornerRadius = UDim.new(0, 8)
+
+local UIStroke = Instance.new('UIStroke')
+UIStroke.Parent = main
+UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+UIStroke.Color = Color3.fromRGB(0, 0, 0)
+UIStroke.LineJoinMode = Enum.LineJoinMode.Round
+UIStroke.Thickness = 2
+
+local UIStroke2 = Instance.new('UIStroke')
+UIStroke2.Parent = label
+UIStroke2.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+UIStroke2.Color = Color3.fromRGB(0, 0, 0)
+UIStroke2.LineJoinMode = Enum.LineJoinMode.Round
+UIStroke2.Thickness = 2
+
+SongBar.Name = "SongBar"
+SongBar.Parent = main
+SongBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+SongBar.Position = UDim2.new(0, 330, 0, 0)
+SongBar.Size = UDim2.new(0, 128, 0, 18)
+SongBar.Font = Enum.Font.SourceSans
+SongBar.PlaceholderColor3 = Color3.fromRGB(155, 155, 155)
+SongBar.PlaceholderText = "Added Song Name..."
+SongBar.Text = ""
+SongBar.TextColor3 = Color3.fromRGB(0, 0, 0)
+SongBar.TextSize = 14.000
+SongBar.TextWrapped = true
+
+local UIStrokeSB = Instance.new('UIStroke')
+UIStrokeSB.Parent = SongBar
+UIStrokeSB.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+UIStrokeSB.Color = Color3.fromRGB(0, 0, 0)
+UIStrokeSB.LineJoinMode = Enum.LineJoinMode.Round
+UIStrokeSB.Thickness = 2
+
+List.Name = "List"
+List.Parent = main
+List.BackgroundColor3 = Color3.new(0.952941, 0.952941, 0.952941)
+List.BorderSizePixel = 0
+List.Position = UDim2.new(0, 330, 0.08, 0)
+List.Size = UDim2.new(0, 128, 0, 198)
+List.ScrollBarThickness = 0
+
+UIGridLayout.Parent = List
+UIGridLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIGridLayout.CellSize = UDim2.new(0, 128, 0, 19)
+UIGridLayout.CellPadding = UDim2.new(0, 10, 0, 5)
+
+local Listt = Instance.new("UICorner")
+Listt.Parent = List
+Listt.CornerRadius = UDim.new(0, 8)
+
+local Listtt = Instance.new('UIStroke')
+Listtt.Parent = List
+Listtt.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+Listtt.Color = Color3.fromRGB(0, 0, 0)
+Listtt.LineJoinMode = Enum.LineJoinMode.Round
+Listtt.Thickness = 2
+
+ListM.Name = "ListM"
+ListM.Parent = main
+ListM.BackgroundColor3 = Color3.new(0, 0, 0)
+ListM.BorderSizePixel = 0
+ListM.Position = UDim2.new(0, 300, 0, 0)
+ListM.Size = UDim2.new(0, 20, 0, 30)
+ListM.Font = Enum.Font.SourceSans
+ListM.Text = "Close"
+ListM.TextColor3 = Color3.new(255, 255, 255)
+ListM.TextScaled = true
+ListM.TextSize = 14
+ListM.TextWrapped = true
+ListM.MouseButton1Click:Connect(function()
+if List.Visible == true or Add.Visible == true then
+List.Visible = false
+Add.Visible = false
+SongBar.Visible = false
+Remove.Visible = false
+ListM.Text = "Open’"
+elseif List.Visible == false or Add.Visible == false then
+List.Visible = true
+Add.Visible = true
+SongBar.Visible = true
+Remove.Visible = true
+ListM.Text = "Close"
+end
+end) 
+
+local Adddd = Instance.new('UIStroke')
+Adddd.Parent = Add
+Adddd.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+Adddd.Color = Color3.fromRGB(0, 0, 0)
+Adddd.LineJoinMode = Enum.LineJoinMode.Round
+Adddd.Thickness = 2
+
+local remove1 = Instance.new('UIStroke')
+remove1.Parent = Remove
+remove1.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+remove1.Color = Color3.fromRGB(0, 0, 0)
+remove1.LineJoinMode = Enum.LineJoinMode.Round
+remove1.Thickness = 2
+
+MusicBar.Name = "MusicBar"
+MusicBar.Parent = UIGridLayout
+MusicBar.BackgroundColor3 = Color3.fromRGB(145, 145, 145) 
+MusicBar.Position = UDim2.new(0, 325, 0, 0)
+MusicBar.Size = UDim2.new(0, 128, 0, 19)
+MusicBar.Font = Enum.Font.SourceSans
+MusicBar.Text = ""
+MusicBar.TextColor3 = Color3.new(255, 255, 255)
+MusicBar.TextScaled = true
+MusicBar.TextSize = 14
+MusicBar.TextWrapped = true
+MusicBar.TextXAlignment = Enum.TextXAlignment.Left
+MusicBar.Visible = false
+
+local UIStrokel = Instance.new('UIStroke')
+UIStrokel.Parent = label
+UIStrokel.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+UIStrokel.Color = Color3.fromRGB(0, 0, 0)
+UIStrokel.LineJoinMode = Enum.LineJoinMode.Round
+UIStrokel.Thickness = 2
+
+Sheet.Name = "Sheet"
+Sheet.Parent = main
+Sheet.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Sheet.Position = UDim2.new(0, 10, 0.2, 0)
+Sheet.Size = UDim2.new(0, 200, 0, 150)
+Sheet.Font = Enum.Font.SourceSans
+Sheet.PlaceholderColor3 = Color3.fromRGB(0, 0, 0)
+Sheet.PlaceholderText = "Put Sheet Here"
+Sheet.Text = ""
+Sheet.TextColor3 = Color3.fromRGB(0, 0, 0)
+Sheet.TextSize = 14.000
+Sheet.TextWrapped = true
+
+local UIStroke3 = Instance.new('UIStroke')
+UIStroke3.Parent = Sheet
+UIStroke3.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+UIStroke3.Color = Color3.fromRGB(0, 0, 0)
+UIStroke3.LineJoinMode = Enum.LineJoinMode.Round
+UIStroke3.Thickness = 2
+
+NameLabel.Name = "NameLabel"
+NameLabel.Parent = main
+NameLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+NameLabel.Position = UDim2.new(0, 10, 0.13, 0)
+NameLabel.Size = UDim2.new(0, 200, 0, 20)
+NameLabel.Font = Enum.Font.SourceSans
+NameLabel.Text = ""
+NameLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+NameLabel.TextSize = 17
+NameLabel.TextWrapped = true
+
+local function handleTextBoxChange()
+if Sheet.Text == "" then
+NameLabel.Text = ""
+end
+end
+
+Sheet.Changed:Connect(handleTextBoxChange)
+
+local UIStroke50 = Instance.new('UIStroke')
+UIStroke50.Parent = NameLabel
+UIStroke50.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+UIStroke50.Color = Color3.fromRGB(0, 0, 0)
+UIStroke50.LineJoinMode = Enum.LineJoinMode.Round
+UIStroke50.Thickness = 2
+
+Tempo.Name = "Tempo"
+Tempo.Parent = main
+Tempo.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Tempo.Position = UDim2.new(0, 218, 0.2, 0)
+Tempo.Size = UDim2.new(0, 100, 0, 40)
+Tempo.Font = Enum.Font.SourceSans
+Tempo.PlaceholderText = "Tempo"
+Tempo.Text = ""
+Tempo.TextColor3 = Color3.fromRGB(0, 0, 0)
+Tempo.TextSize = 40
+Tempo.TextWrapped = true
+
+local UIStroke4 = Instance.new('UIStroke')
+UIStroke4.Parent = Tempo
+UIStroke4.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+UIStroke4.Color = Color3.fromRGB(0, 0, 0)
+UIStroke4.LineJoinMode = Enum.LineJoinMode.Round
+UIStroke4.Thickness = 2
+
+Play.Name = "Play"
+Play.Parent = main
+Play.BackgroundColor3 = Color3.new(255, 255, 255)
+Play.BorderSizePixel = 0
+Play.Position = UDim2.new(0, 10, 0.82, 0)
+Play.Size = UDim2.new(0, 90, 0, 40)
+Play.Font = Enum.Font.SourceSans
+Play.Text = "Play"
+Play.TextColor3 = Color3.new(0, 0.65098, 0)
+Play.TextScaled = true
+Play.TextSize = 14
+Play.TextWrapped = true
+Play.MouseButton1Click:Connect(function()
+if Tempo.Text == "0" or Sheet.Text == "" or Tempo.Text == "" then
+game:GetService("StarterGui"):SetCore("SendNotification", {
+Title = "PandaHub ",
+Text = "Invalid Sheet or Tempo",
+Duration = 5,
+Button1 = "Okay"
+})
+else
+local inputSheet = Sheet.Text
+local tempo = tonumber(Tempo.Text)
+if tempo and tempo > 0 then
+config.tempo = tempo -- Update the tempo value
+currentNoteIndex = 1
+config.enabled = false
+wait(1)
+config.delay = 6 / config.tempo -- Calculate the delay based on the updated tempo value
+config.enabled = true
+playSingleIteration(parseSong(inputSheet))
+end
+end
+end)
+
+
+SubAdd.Name = "SubAdd"
+SubAdd.Parent = main
+SubAdd.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+SubAdd.Position = UDim2.new(0, 218, 0.64, 0)
+SubAdd.Size = UDim2.new(0, 100, 0, 40)
+SubAdd.Font = Enum.Font.SourceSans
+SubAdd.Text = "2"
+SubAdd.TextColor3 = Color3.fromRGB(0, 0, 0)
+SubAdd.TextSize = 25
+SubAdd.TextWrapped = true
+
+local function handleTextBoxChanges()
+local input = tonumber(SubAdd.Text)
+if input == nil or input <= 0 then
+SubAdd.Text = "5"
+end
+end
+
+SubAdd.FocusLost:Connect(handleTextBoxChanges)
+
+Addition.Name = "Addition"
+Addition.Parent = main
+Addition.BackgroundColor3 = Color3.new(255, 255, 255)
+Addition.BorderSizePixel = 0
+Addition.Position = UDim2.new(0, 270, 0.82, 0)
+Addition.Size = UDim2.new(0, 48, 0, 40)
+Addition.Font = Enum.Font.SourceSans
+Addition.Text = "+"
+Addition.TextColor3 = Color3.fromRGB(173, 67, 68)
+Addition.TextScaled = true
+Addition.TextSize = 14
+Addition.TextWrapped = true
+Addition.MouseButton1Click:Connect(function()
+local SubToAdd = tonumber(SubAdd.Text)
+local tempo = tonumber(Tempo.Text) or config.tempo
+if SubToAdd and SubToAdd > 0 then
+if Tempo.Text == "1" then
+if SubAdd.Text == "1" then
+config.tempo = tempo + 1
+else
+config.tempo = tempo - 1 + SubToAdd
+end
+else
+config.tempo = tempo + SubToAdd
+end
+else
+config.tempo = tempo + 2
+end
+Tempo.Text = tostring(config.tempo)
+config.delay = 6 / Tempo.Text
+end)
+
+Substract.Name = "Substract"
+Substract.Parent = main
+Substract.BackgroundColor3 = Color3.new(255, 255, 255)
+Substract.BorderSizePixel = 0
+Substract.Position = UDim2.new(0, 218, 0.82, 0)
+Substract.Size = UDim2.new(0, 48, 0, 40)
+Substract.Font = Enum.Font.SourceSans
+Substract.Text = "-"
+Substract.TextColor3 = Color3.fromRGB(173, 67, 68)
+Substract.TextScaled = true
+Substract.TextSize = 14
+Substract.TextWrapped = true
+Substract.MouseButton1Click:Connect(function()
+local SubToSubtract = tonumber(SubAdd.Text)
+local tempo = tonumber(Tempo.Text) or config.tempo
+if SubToSubtract and SubToSubtract > 0 then
+config.tempo = math.max(1, tempo - SubToSubtract)
+else
+config.tempo = math.max(1, tempo - 5)
+end
+Tempo.Text = tostring(config.tempo)
+config.delay = 6 / Tempo.Text
+end)
+
+local UIStroke5 = Instance.new('UIStroke')
+UIStroke5.Parent = Play
+UIStroke5.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+UIStroke5.Color = Color3.fromRGB(0, 0, 0)
+UIStroke5.LineJoinMode = Enum.LineJoinMode.Round
+UIStroke5.Thickness = 2
+
+Stop.Name = "Stop"
+Stop.Parent = main
+Stop.BackgroundColor3 = Color3.new(255, 255, 255)
+Stop.BorderSizePixel = 0
+Stop.Position = UDim2.new(0, 120, 0.82, 0)
+Stop.Size = UDim2.new(0, 90, 0, 40)
+Stop.Font = Enum.Font.SourceSans
+Stop.Text = "Stop"
+Stop.TextColor3 = Color3.fromRGB(173, 67, 68)
+Stop.TextScaled = true
+Stop.TextSize = 14
+Stop.TextWrapped = true
+Stop.MouseButton1Click:Connect(function()
+config.enabled = false
+end)
+
+local UIStroke6 = Instance.new('UIStroke')
+UIStroke6.Parent = Stop
+UIStroke6.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+UIStroke6.Color = Color3.fromRGB(0, 0, 0)
+UIStroke6.LineJoinMode = Enum.LineJoinMode.Round
+UIStroke6.Thickness = 2
+
+local Close = Instance.new("TextButton")
+
+Pause.Name = "Pause"
+Pause.Parent = main
+Pause.BackgroundColor3 = Color3.new(255, 255, 255)
+Pause.BorderSizePixel = 0
+Pause.Position = UDim2.new(0, 218, 0.415, 0)
+Pause.Size = UDim2.new(0, 100, 0, 40)
+Pause.Font = Enum.Font.SourceSans
+Pause.Text = "II"
+Pause.TextColor3 = Color3.fromRGB(0, 0, 0)
+Pause.TextScaled = true
+Pause.TextSize = 14
+Pause.TextWrapped = true
+Pause.MouseButton1Click:Connect(function()
+config.paused = not config.paused
+if not config.paused then
+Pause.Text = "II"
+currentNoteIndex = currentNoteIndex + 1 
+else
+Pause.Text = "▶"
+end
+end)
+
+local UIStroke89 = Instance.new('UIStroke')
+UIStroke89.Parent = Pause
+UIStroke89.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+UIStroke89.Color = Color3.fromRGB(0, 0, 0)
+UIStroke89.LineJoinMode = Enum.LineJoinMode.Round
+UIStroke89.Thickness = 2
+
+local ScreenGui2 = Instance.new("ScreenGui")
+local Main3 = Instance.new("Frame")
+local Save = Instance.new("TextButton")
+local Sheet2 = Instance.new("TextBox")
+local Name2 = Instance.new("TextBox")
+local Tempo2 = Instance.new("TextBox")
+--Core
+ 
+ScreenGui2.Name = "ScreenGui2"
+ScreenGui2.Parent = game.CoreGui
+ScreenGui2.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ 
+--GUI Script
+ 
+Main3.Parent = ScreenGui2
+Main3.BackgroundColor3 = Color3.fromRGB(83, 83, 83)
+Main3.Position = UDim2.new(0.32929045, 0, 0.339805812, 0)
+Main3.Size = UDim2.new(0, 328, 0, 250)
+Main3.Active = true
+Main3.Draggable = true
+
+Tempo2.Name = "Tempo2"
+Tempo2.Parent = Main3
+Tempo2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Tempo2.Position = UDim2.new(0, 218, 0.05, 0)
+Tempo2.Size = UDim2.new(0, 90, 0, 40)
+Tempo2.Font = Enum.Font.SourceSans
+Tempo2.PlaceholderText = "Tempo"
+Tempo2.Text = ""
+Tempo2.TextColor3 = Color3.fromRGB(0, 0, 0)
+Tempo2.TextSize = 20
+Tempo2.TextWrapped = true
+
+Name2.Name = "Name2"
+Name2.Parent = Main3
+Name2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Name2.Position = UDim2.new(0, 20, 0.05, 0)
+Name2.Size = UDim2.new(0, 185, 0, 40)
+Name2.Font = Enum.Font.SourceSans
+Name2.PlaceholderColor3 = Color3.fromRGB(0, 0, 0)
+Name2.PlaceholderText = "Name"
+Name2.Text = ""
+Name2.TextColor3 = Color3.fromRGB(0, 0, 0)
+Name2.TextSize = 14.000
+Name2.TextWrapped = true
+
+Sheet2.Name = "Sheet2"
+Sheet2.Parent = Main3
+Sheet2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Sheet2.Position = UDim2.new(0, 5, 0.3, 0)
+Sheet2.Size = UDim2.new(0, 318, 0, 100)
+Sheet2.Font = Enum.Font.SourceSans
+Sheet2.PlaceholderColor3 = Color3.fromRGB(0, 0, 0)
+Sheet2.PlaceholderText = "Put Sheet Here"
+Sheet2.Text = ""
+Sheet2.TextColor3 = Color3.fromRGB(0, 0, 0)
+Sheet2.TextSize = 14.000
+Sheet2.TextWrapped = true
+
+Save.Name = "Save"
+Save.Parent = Main3
+Save.BackgroundColor3 = Color3.new(255, 255, 255)
+Save.BorderSizePixel = 0
+Save.Position = UDim2.new(0, 115, 0.82, 0)
+Save.Size = UDim2.new(0, 90, 0, 40)
+Save.Font = Enum.Font.SourceSans
+Save.Text = "Save"
+Save.TextColor3 = Color3.new(0, 0.65098, 0)
+Save.TextScaled = true
+Save.TextSize = 14
+Save.TextWrapped = true
+
+Close.Name = "Close"
+Close.Parent = Main3
+Close.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+Close.Position = UDim2.new(0, 0, 0, 0)
+Close.Size = UDim2.new(0, 20, 0, 20)
+Close.Font = Enum.Font.SourceSans
+Close.Text = "X"
+Close.TextColor3 = Color3.fromRGB(0, 0, 0)
+Close.TextScaled = true
+Close.TextSize = 14.000
+Close.TextWrapped = true
+Close.MouseButton1Down:Connect(function()
+if ScreenGui2.Enabled == true then
+customsheet.Enabled = true
+ScreenGui2.Enabled = false
+end
+end)
+
+Remove.Name = "Remove"
+Remove.Parent = main
+Remove.BackgroundColor3 = Color3.new(0.952941, 0.952941, 0.952941)
+Remove.BorderSizePixel = 0
+Remove.Position = UDim2.new(0, 330, 0.87, 0)
+Remove.Size = UDim2.new(0, 30, 0, 32)
+Remove.Font = Enum.Font.SourceSans
+Remove.Text = "Delete"
+Remove.TextColor3 = Color3.fromRGB(172, 38, 38)
+Remove.TextScaled = true
+Remove.TextSize = 14
+Remove.TextWrapped = true
+
+Add.Name = "Add"
+Add.Parent = main
+Add.BackgroundColor3 = Color3.new(0.952941, 0.952941, 0.952941)
+Add.BorderSizePixel = 0
+Add.Position = UDim2.new(0, 362, 0.87, 0) 
+
+Add.Size = UDim2.new(0, 96, 0, 32)
+Add.Font = Enum.Font.SourceSans
+Add.Text = "+"
+Add.TextColor3 = Color3.new(0, 0.65098, 0)
+Add.TextScaled = true
+Add.TextSize = 14
+Add.TextWrapped = true
+Add.MouseButton1Click:Connect(function()
+if ScreenGui2.Enabled == true or customsheet.Enabled == false then
+ScreenGui2.Enabled = false
+customsheet.Enabled = true
+elseif ScreenGui2.Enabled == false or customsheet.Enabled == true then
+ScreenGui2.Enabled = true
+customsheet.Enabled = false
+end
+end)
+
+ScreenGui2.Enabled = false
+
+local fileContents = readfile("PandaHubbS/Sheets.txt")
+local Sheets = game:GetService("HttpService"):JSONDecode(fileContents)
+
+for i, Sheet in ipairs(Sheets) do
+  local Add_Bar = MusicBar:Clone(Sheet.songName, Sheet.text, Sheet.notes, Sheet.speed)
+  local Notes = Instance.new('StringValue')
+  local Tempo3 = Instance.new('StringValue')
+  Notes.Parent = MusicBar
+  Tempo3.Parent = MusicBar
+  Add_Bar.Parent = List
+  Add_Bar.Name = Sheet.songName
+  Add_Bar.Text = Sheet.text
+  Notes.Value = Sheet.notes
+  Tempo3.Value = Sheet.speed
+  Add_Bar.MouseButton1Click:Connect(function()
+main.Sheet.Text = Notes.Value
+main.Tempo.Text = Tempo3.Value
+main.NameLabel.Text = Add_Bar.Name
+  end)
+  Add_Bar.Visible = true
+ totalButtons = totalButtons + 1
+end
+
+SongBar.Changed:Connect(function()
+  local searchText = SongBar.Text:lower()
+  for _, Add_Bar in ipairs(List:GetChildren()) do
+if Add_Bar:IsA("TextButton") then
+  if Add_Bar.Text:lower():find(searchText) then
+Add_Bar.Visible = true
+  else
+Add_Bar.Visible = false
+  end
+end
+  end
+end)
+
+Remove.MouseButton1Click:Connect(function()
+local nameLabelText = NameLabel.Text
+if nameLabelText == "" or nameLabelText == nil then
+game:GetService("StarterGui"):SetCore("SendNotification", {
+Title = "Panda Hub",
+Text = "Please choose a song to remove.",
+Duration = 2,
+})
+else
+local function callback(text)
+    if text == "Yes" then
+        local sheets = game:GetService("HttpService"):JSONDecode(readfile("PandaHubbS/Sheets.txt"))
+        for i, sheet in ipairs(sheets) do
+            if sheet.text == nameLabelText and sheet.songName == nameLabelText then
+                table.remove(sheets, i)
+                writefile("PandaHubbS/Sheets.txt", game:GetService("HttpService"):JSONEncode(sheets))
+                
+                -- Remove the button from the GUI
+                for _, addBar in ipairs(List:GetChildren()) do
+                    if addBar:IsA("TextButton") and addBar.Name == nameLabelText then
+                        addBar:Destroy()
+                        totalButtons = totalButtons - 1 -- Decrement totalButtons
+                        local buttonHeight = 19  -- As per the provided information
+                        local contentHeight = totalButtons * (buttonHeight + 5) -- Accounting for cell padding
+                        List.CanvasSize = UDim2.new(0, 0, 0, contentHeight)
+                        break
+                    end
+                end
+
+                NameLabel.Text = ""
+                Sheet.Text = ""
+                Tempo.Text = ""
+                SongBar.Text = ""
+                break
+            end
+        end
+    elseif text == "No" then
+        print("No")
+    end
+end
+
+local notificationBindable = Instance.new("BindableFunction")
+notificationBindable.OnInvoke = callback
+
+game.StarterGui:SetCore("SendNotification", {
+    Title = "Confirmation",
+    Text = "Are you sure you want to remove the song: " .. nameLabelText .. "?",
+    Icon = "",
+    Duration = math.huge,
+    Button1 = "Yes",
+    Button2 = "No",
+    Callback = notificationBindable,
+})
+end
+end)
+
+Save.MouseButton1Click:Connect(function()
+local name2Text = Main3.Name2.Text
+local sheet2Text = Main3.Sheet2.Text
+local tempo2Text = Main3.Tempo2.Text
+
+local isNameInUse = false
+for _, child in pairs(main.List:GetChildren()) do
+if child.Name == name2Text then
+isNameInUse = true
+break
+end
+end
+
+if isNameInUse then
+game:GetService("StarterGui"):SetCore("SendNotification", {
+Title = "Panda Hub âš ",
+Text = "The name is already in use. Please choose a different name.",
+Duration = 5,
+Button1 = "Okay"
+})
+Main3.Name2.TextColor3 = Color3.fromRGB(208, 0, 0)
+wait(0.2)
+Main3.Name2.TextColor3 = Color3.fromRGB(0, 0, 0)
+elseif Name2.Text == "" then
+game:GetService("StarterGui"):SetCore("SendNotification", {
+Title = "Panda Hub âš ",
+Text = "Please enter a name.",
+Duration = 5,
+Button1 = "Okay"
+})
+else
+local Sheets = game:GetService("HttpService"):JSONDecode(readfile("PandaHubbS/Sheets.txt"))
+
+table.insert(Sheets, {
+songName = name2Text,
+text = name2Text,
+notes = sheet2Text,
+speed = tempo2Text,
+})
+
+writefile("PandaHubbS/Sheets.txt", game:GetService("HttpService"):JSONEncode(Sheets))
+
+local Notes = Instance.new('StringValue')
+local Tempo3 = Instance.new('StringValue')
+local namelabel1 = Instance.new('StringValue')
+local Add_Bar = MusicBar:Clone()
+Notes.Parent = MusicBar
+Tempo3.Parent = MusicBar
+Add_Bar.Parent = List
+Add_Bar.Name = name2Text
+Add_Bar.Text = name2Text
+Notes.Value = sheet2Text
+Tempo3.Value = tempo2Text
+namelabel1.Value = name2Text
+Add_Bar.MouseButton1Click:Connect(function()
+main.Sheet.Text = Notes.Value
+main.Tempo.Text = Tempo3.Value
+main.NameLabel.Text = namelabel1.Value
+end)
+
+Add_Bar.Visible = true
+
+wait(0.5)
+Main3.Sheet2.Text = ""
+Main3.Name2.Text = ""
+Main3.Tempo2.Text = ""
+ScreenGui2.Enabled = false
+customsheet.Enabled = true
+end
+totalButtons = totalButtons + 1
+local buttonHeight = 19
+local contentHeight = totalButtons * (buttonHeight + 5)
+List.CanvasSize = UDim2.new(0, 0, 0, contentHeight)
+end)
+
+-- Get the height of each button
+local buttonHeight = 19  -- As per the provided information
+
+-- Calculate the total height needed for all buttons
+local contentHeight = totalButtons * (buttonHeight + 5) -- Accounting for cell padding
+
+-- Update the CanvasSize property of the scrolling frame
+List.CanvasSize = UDim2.new(0, 0, 0, contentHeight)
+
+local function onMainPositionChanged()
+  Main3.Position = main.Position
+end
+
+local function onMain3PositionChanged()
+  main.Position = Main3.Position
+end
+
+main.Changed:Connect(function(property)
+  if property == "Position" then
+onMainPositionChanged()
+  end
+end)
+
+Main3.Changed:Connect(function(property)
+  if property == "Position" then
+onMain3PositionChanged()
+  end
+end)
+
+ScreenGui2.Enabled = false
+
+local HideKeyPressGui = Instance.new("ScreenGui")
+HideKeyPressGui.Parent = game.CoreGui
+
+local HideKeyPressButton = Instance.new("TextButton")
+HideKeyPressButton.Text = "Hide"
+HideKeyPressButton.Size = UDim2.new(0, 100, 0, 50)
+HideKeyPressButton.Position = UDim2.new(0, 12, 0, 130)
+HideKeyPressButton.Parent = HideKeyPressGui
+HideKeyPressButton.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+HideKeyPressButton.BorderSizePixel = 2
+HideKeyPressButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+HideKeyPressButton.Font = Enum.Font.SourceSans
+HideKeyPressButton.TextSize = 18
+
+local player = game.Players.LocalPlayer
+local input = game:GetService("UserInputService")
+
+local function mobile()
+    return input.TouchEnabled
+end
+
+if mobile() then
+
+local touchOffsetX, touchOffsetY
+
+HideKeyPressButton.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.Touch then
+        touchOffsetX = input.Position.X - HideKeyPressButton.Position.X.Offset
+        touchOffsetY = input.Position.Y - HideKeyPressButton.Position.Y.Offset
+    end
+end)
+
+HideKeyPressButton.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.Touch then
+        HideKeyPressButton.Position = UDim2.new(0, input.Position.X - touchOffsetX, 0, input.Position.Y - touchOffsetY)
+    end
+end)
+
+HideKeyPressButton.MouseButton1Click:Connect(function()
+    customsheet.Enabled = not customsheet.Enabled
+    if customsheet.Enabled then
+        HideKeyPressButton.Text = "Hide"
+    else
+        HideKeyPressButton.Text = "Show"
+    end
+end)
+
+
+else -- if PC
+
+local mouseOffsetX, mouseOffsetY
+local isDragging = false
+
+HideKeyPressButton.MouseButton1Down:Connect(function()
+    isDragging = true
+    local mousePos = game.Players.LocalPlayer:GetMouse().Position
+    mouseOffsetX = mousePos.X - HideKeyPressButton.Position.X.Offset
+    mouseOffsetY = mousePos.Y - HideKeyPressButton.Position.Y.Offset
+end)
+
+game.Players.LocalPlayer:GetMouse().Move:Connect(function()
+    if isDragging then
+        local mousePos = game.Players.LocalPlayer:GetMouse().Position
+        HideKeyPressButton.Position = UDim2.new(0, mousePos.X - mouseOffsetX, 0, mousePos.Y - mouseOffsetY)
+    end
+end)
+
+HideKeyPressButton.MouseButton1Up:Connect(function()
+    isDragging = false
+end)
+
+HideKeyPressButton.MouseButton1Click:Connect(function()
+    customsheet.Enabled = not customsheet.Enabled
+    if customsheet.Enabled then
+        HideKeyPressButton.Text = "Hide"
+    else
+        HideKeyPressButton.Text = "Show"
+    end
+end)
+
+
+end
