@@ -1,0 +1,112 @@
+-- Create a ScreenGui to hold the UI
+local gui = Instance.new("ScreenGui")
+gui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Create the main frame
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 500, 0, 250)
+frame.Position = UDim2.new(0.5, -250, 0.5, -125)
+frame.BackgroundColor3 = Color3.fromRGB(195, 163, 135)
+frame.BorderSizePixel = 4
+frame.BorderColor3 = Color3.fromRGB(107, 70, 52)
+frame.Parent = gui
+
+-- Add a title at the top
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 30)
+title.Position = UDim2.new(0, 0, 0, 0)
+title.Text = "Choose Piano Script"
+title.TextSize = 20
+title.TextColor3 = Color3.fromRGB(107, 70, 52)
+title.BackgroundTransparency = 1
+title.Font = Enum.Font.Garamond
+title.Parent = frame
+
+-- Define arrays for different sets of text and images
+local imageTitles = {"Auto Play Piano", "Virtual Sheet Player", "Virtual Sheet Presser"}
+local buttonTitles = {"Execute", "Execute", "Execute"}
+local images = {
+    "rbxassetid://17289478318",
+    "rbxassetid://17289480095",
+    "rbxassetid://17289482108"
+}
+
+-- Calculate the total width of the elements and the gap
+local totalWidth = #imageTitles * 130 + (#imageTitles - 1) * 40
+local startX = (500 - totalWidth) / 2
+
+-- Create local variables for images
+local image1 = images[1]
+local image2 = images[2]
+local image3 = images[3]
+
+-- Add image labels arranged from left to right
+for i = 1, 3 do
+    local imageLabel = Instance.new("ImageLabel")
+    imageLabel.Size = UDim2.new(0, 130, 0, 100)
+    imageLabel.Position = UDim2.new(0, startX + (i - 1) * 170, 0, 50)
+    imageLabel.BackgroundColor3 = Color3.fromRGB(157, 131, 108)
+    imageLabel.BorderSizePixel = 2
+    imageLabel.BorderColor3 = Color3.fromRGB(107, 70, 52)
+    imageLabel.Image = images[i]
+    imageLabel.Parent = frame
+end
+
+-- Add labels to display image titles
+for i = 1, 3 do
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(0, 130, 0, 20)
+    label.Position = UDim2.new(0, startX + (i - 1) * 170, 0, 160)
+    label.Text = imageTitles[i]
+    label.TextSize = 15
+    label.TextColor3 = Color3.fromRGB(107, 70, 52)
+    label.BackgroundTransparency = 1
+    label.BorderSizePixel = 2
+    label.BorderColor3 = Color3.fromRGB(107, 70, 52)
+    label.Font = Enum.Font.Garamond
+    label.Parent = frame
+end
+
+for i = 1, 3 do
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(0, 130, 0, 30)
+    button.Position = UDim2.new(0, startX + (i - 1) * 170, 0, 200)
+    button.Text = buttonTitles[i]
+    button.TextSize = 15
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.BackgroundColor3 = Color3.fromRGB(107, 70, 52)
+    button.BorderSizePixel = 2
+    button.BorderColor3 = Color3.fromRGB(107, 70, 52)
+    button.Font = Enum.Font.Garamond
+    button.Parent = frame
+
+    -- Assign functions to button clicks based on index
+    if i == 1 then
+        button.MouseButton1Click:Connect(function()
+            button.Text = "Loading..."
+            local script = game:HttpGet("https://gist.githubusercontent.com/MADNESSTEST/b88c8302c38b8723acd50d703a1512c5/raw/18361ad75f314c892e31018a78065a9813c8d088/APP")
+            local success, result = pcall(loadstring(script))
+            if success then
+                gui:Destroy()
+            end
+        end)
+    elseif i == 2 then
+        button.MouseButton1Click:Connect(function()
+            button.Text = "Loading..."
+            local script = game:HttpGet("https://gist.githubusercontent.com/MADNESSTEST/b88c8302c38b8723acd50d703a1512c5/raw/f27748c3b82b5c88f439eb18319e38860980bf59/VSP")
+            local success, result = pcall(loadstring(script))
+            if success then
+                gui:Destroy()
+            end
+        end)
+    else
+        button.MouseButton1Click:Connect(function()
+            button.Text = "Loading..."
+            local script = game:HttpGet("https://gist.githubusercontent.com/MADNESSTEST/b88c8302c38b8723acd50d703a1512c5/raw/c05e7aff6253639a806bc2cf0691fa8a2ce9c3dd/PKP")
+            local success, result = pcall(loadstring(script))
+            if success then
+                gui:Destroy()
+            end
+        end)
+    end
+end
