@@ -1,6 +1,6 @@
 -- Key System by: PandaExploits
 -- Load the UI script
-local createUI = loadstring(game:HttpGet("https://gist.githubusercontent.com/MADNESSTEST/749e2ff78107bbe4b96471b991d4b7b5/raw/7386579e2f335d21ef2ae2f2c9bb8dcb3c79f2dd/Main%2520Key%2520UI"))()
+local createUI = loadstring(game:HttpGet("https://github.com/wownskdo/Simple-Key-UI/raw/refs/heads/main/Main%20Key%20UI"))()
 
 -- Name of the script
 local name = "Auto Piano v3.5.1: Key System"
