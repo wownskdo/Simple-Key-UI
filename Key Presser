@@ -1,0 +1,687 @@
+print("Created By: Panda Exploit")
+
+if isfolder("PandaHubPresser") == false then
+makefolder("PandaHubPresser")
+end
+
+if isfile("PandaHubPresser/Sheets.txt") == false then
+writefile("PandaHubPresser/Sheets.txt", "[]")
+end
+
+-- Create ScreenGui
+local KeyPresser = Instance.new("ScreenGui")
+KeyPresser.Name = "KeyPresser"
+KeyPresser.Parent = game.CoreGui
+KeyPresser.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+local KeyPresserFrame = Instance.new("Frame")
+KeyPresserFrame.Size = UDim2.new(0, 300, 0, 170)
+KeyPresserFrame.Position = UDim2.new(0.5, -150, 0.5, -85)
+KeyPresserFrame.BackgroundColor3 = Color3.fromRGB(197, 140, 110)
+KeyPresserFrame.BorderColor3 = Color3.fromRGB(97, 50, 25)
+KeyPresserFrame.BorderSizePixel = 2
+KeyPresserFrame.Parent = KeyPresser
+KeyPresserFrame.Active = true
+KeyPresserFrame.Draggable = true
+
+-- KeyTitle
+local KeyTitle = Instance.new("TextLabel")
+KeyTitle.Size = UDim2.new(1, 0, 0.1, 0)
+KeyTitle.Position = UDim2.new(0, 0, 0, 0)
+KeyTitle.Text = "Piano Key Presser"
+KeyTitle.TextColor3 = Color3.fromRGB(255, 230, 204)
+KeyTitle.BackgroundTransparency = 1
+KeyTitle.Font = Enum.Font.Garamond
+KeyTitle.TextSize = 24
+KeyTitle.Parent = KeyPresserFrame
+
+local KeyTextSavedF = Instance.new("Frame")
+KeyTextSavedF.Size = UDim2.new(0.6, 0, 1, 0)
+KeyTextSavedF.Position = UDim2.new(1.01, 0, 0, 0)
+KeyTextSavedF.BackgroundColor3 = Color3.fromRGB(197, 140, 110)
+KeyTextSavedF.BorderColor3 = Color3.fromRGB(97, 50, 25)
+KeyTextSavedF.BorderSizePixel = 2
+KeyTextSavedF.Parent = KeyPresserFrame
+
+-- TextBox
+local KeyTextbox = Instance.new("TextBox")
+KeyTextbox.Size = UDim2.new(0.8, 0, 0.6, 0)
+KeyTextbox.Position = UDim2.new(0.1, 0, 0.1, 0)
+KeyTextbox.PlaceholderText = "Enter notes here"
+KeyTextbox.Text = ""
+KeyTextbox.TextColor3 = Color3.fromRGB(255, 230, 204)
+KeyTextbox.Font = Enum.Font.Garamond
+KeyTextbox.TextSize = 15
+KeyTextbox.TextXAlignment = Enum.TextXAlignment.Left
+KeyTextbox.TextWrapped = true
+KeyTextbox.BackgroundColor3 = Color3.fromRGB(170, 120, 90)
+KeyTextbox.BorderColor3 = Color3.fromRGB(97, 50, 25)
+KeyTextbox.BorderSizePixel = 2
+KeyTextbox.Parent = KeyTextSavedF
+
+local KeyTextBoxName = Instance.new("TextBox")
+KeyTextBoxName.Size = UDim2.new(0.55, 0, 0.150, 0)
+KeyTextBoxName.Position = UDim2.new(0.1, 0, 0.77, 0)
+KeyTextBoxName.PlaceholderText = "Enter name here"
+KeyTextBoxName.Text = ""
+KeyTextBoxName.TextColor3 = Color3.fromRGB(255, 230, 204)
+KeyTextBoxName.Font = Enum.Font.Garamond
+KeyTextBoxName.TextSize = 15
+KeyTextBoxName.TextXAlignment = Enum.TextXAlignment.Left
+KeyTextBoxName.TextWrapped = true
+KeyTextBoxName.BackgroundColor3 = Color3.fromRGB(170, 120, 90)
+KeyTextBoxName.BorderColor3 = Color3.fromRGB(97, 50, 25)
+KeyTextBoxName.BorderSizePixel = 2
+KeyTextBoxName.Parent = KeyTextSavedF
+
+local KeyTextLabel = Instance.new("TextLabel")
+KeyTextLabel.Size = UDim2.new(0.9, 0, 0.2, 0)
+KeyTextLabel.Position = UDim2.new(0.05, 0, 0.2, 0)
+KeyTextLabel.Text = ""
+KeyTextLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+KeyTextLabel.Font = Enum.Font.Gotham
+KeyTextLabel.TextSize = 18
+KeyTextLabel.TextXAlignment = Enum.TextXAlignment.Left
+KeyTextLabel.TextWrapped = false
+KeyTextLabel.ClipsDescendants = true
+KeyTextLabel.BackgroundColor3 = Color3.fromRGB(170, 120, 90)
+KeyTextLabel.BorderColor3 = Color3.fromRGB(97, 50, 25)
+KeyTextLabel.BorderSizePixel = 2
+KeyTextLabel.Parent = KeyPresserFrame
+
+local hehelabel = Instance.new("TextLabel")
+hehelabel.Parent = KeyPresserFrame
+hehelabel.Position = UDim2.new(0, 0, 0, 0)
+hehelabel.Size = UDim2.new(0, 100, 0, 50)
+hehelabel.Text = ""
+hehelabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+hehelabel.TextSize = 14
+hehelabel.Visible = false
+
+-- Saved Sheet
+local totalButtons = 0
+
+local List = Instance.new("ScrollingFrame")
+List.Name = "List"
+List.Parent = KeyPresserFrame
+List.BackgroundColor3 = Color3.fromRGB(170, 120, 90)
+List.BorderColor3 = Color3.fromRGB(97, 50, 25)
+List.BorderSizePixel = 2
+List.Position = UDim2.new(-0.406, 0, 0.135, 0)
+List.Size = UDim2.new(0, 120, 0, 147)
+List.ScrollBarThickness = 1
+
+local UIGridLayout = Instance.new("UIGridLayout")
+UIGridLayout.Parent = List
+UIGridLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIGridLayout.CellSize = UDim2.new(0, 120, 0, 19)
+UIGridLayout.CellPadding = UDim2.new(0, 10, 0, 5)
+
+local Add = Instance.new("TextBox")
+Add.Parent = KeyPresserFrame
+Add.BackgroundColor3 = Color3.fromRGB(197, 140, 110) -- Retro vintage button background color
+Add.BorderColor3 = Color3.fromRGB(97, 50, 25) -- Retro vintage button border color
+Add.BorderSizePixel = 2
+Add.Position = UDim2.new(-0.406, 0, 0, 0)
+Add.Size = UDim2.new(0, 90, 0, 20)
+Add.Font = Enum.Font.Garamond -- Retro vintage font
+Add.PlaceholderText = "Search Song..."
+Add.Text = ""
+Add.TextColor3 = Color3.fromRGB(255, 230, 204)
+Add.TextScaled = true
+Add.TextSize = 12
+Add.TextWrapped = true
+
+local Remove = Instance.new("ImageButton") 
+Remove.Parent = KeyPresserFrame
+Remove.BackgroundColor3 = Color3.fromRGB(197, 140, 110)
+Remove.BorderColor3 = Color3.fromRGB(97, 50, 25)
+Remove.BorderSizePixel = 2
+Remove.Position = UDim2.new(-0.1, 0, 0, 0)
+Remove.Size = UDim2.new(0, 30, 0, 20)
+Remove.Image = "rbxassetid://17346672743"
+Remove.ImageColor3 = Color3.fromRGB(255, 230, 204)
+Remove.ScaleType = Enum.ScaleType.Fit
+
+local MusicBar = Instance.new("TextButton")
+MusicBar.Name = "MusicBar"
+MusicBar.Parent = UIGridLayout
+MusicBar.BackgroundColor3 = Color3.fromRGB(197, 140, 110)
+MusicBar.Position = UDim2.new(0, 325, 0, 0)
+MusicBar.Size = UDim2.new(0, 128, 0, 19)
+MusicBar.Font = Enum.Font.Garamond
+MusicBar.Text = ""
+MusicBar.TextColor3 = Color3.new(255, 255, 255)
+MusicBar.TextScaled = true
+MusicBar.TextSize = 14
+MusicBar.TextWrapped = true
+MusicBar.BorderSizePixel = 2
+MusicBar.BorderColor3 = Color3.fromRGB(97, 50, 25) -- Set the border color here
+MusicBar.Visible = false
+
+-- Button Style Function
+local function createButton(buttonText, positionY, sizeY)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(0.4, 0, sizeY, 0)
+    button.Position = UDim2.new(0.05, 0, positionY, 0)
+    button.Text = buttonText
+    button.TextColor3 = Color3.fromRGB(255, 230, 204)
+    button.BackgroundColor3 = Color3.fromRGB(197, 140, 110)
+    button.BorderSizePixel = 2
+    button.BorderColor3 = Color3.fromRGB(97, 50, 25)
+    button.Font = Enum.Font.Garamond
+    button.TextSize = 20
+    button.Parent = KeyPresserFrame
+    return button
+end
+
+-- Button
+local KeyReset = createButton("Reset/Load", 0.50, 0.15)
+KeyReset.Position = UDim2.new(0.300, 0, 0.50, 0)
+
+-- Left Button
+local KeyPlayLeft = createButton("[-", 0.77, 0.18)
+
+-- Right Button
+local KeyPlayRight = createButton("=]", 0.77, 0.18)
+KeyPlayRight.Position = UDim2.new(0.55, 0, 0.77, 0)
+
+local HideTextBox = createButton("Hide", 0, 0.1)
+HideTextBox.Position = UDim2.new(0.80, 0, 0, 0)
+HideTextBox.Size = UDim2.new(0.2, 0, 0.1, 0)
+
+local HideSheet = createButton("≡", 0, 0)
+HideSheet.Position = UDim2.new(0, 0, 0, 0)
+HideSheet.Size = UDim2.new(0.1, 0, 0, 20)
+HideSheet.TextSize = 15
+HideSheet.Font = Enum.Font.Arial
+
+local SaveButton = createButton("Save", 0.77, 0.150)
+SaveButton.Position = UDim2.new(0.7, 0, 0.77, 0)
+SaveButton.Size = UDim2.new(0.2, 0, 0.150, 0)
+SaveButton.Parent = KeyTextSavedF
+
+-- Define a variable to keep track of the current note index
+local singleNoteIndex = 1
+
+-- Define the AsciiKeys table
+local AsciiKeys = {
+    ['a'] = 0x41, ['b'] = 0x42, ['c'] = 0x43, ['d'] = 0x44, ['e'] = 0x45, ['f'] = 0x46, ['g'] = 0x47, ['h'] = 0x48, ['i'] = 0x49, ['j'] = 0x4A,
+    ['k'] = 0x4B, ['l'] = 0x4C, ['m'] = 0x4D, ['n'] = 0x4E, ['o'] = 0x4F, ['p'] = 0x50, ['q'] = 0x51, ['r'] = 0x52, ['s'] = 0x53, ['t'] = 0x54,
+    ['u'] = 0x55, ['v'] = 0x56, ['w'] = 0x57, ['x'] = 0x58, ['y'] = 0x59, ['z'] = 0x5A, ['0'] = 0x30, ['1'] = 0x31, ['2'] = 0x32, ['3'] = 0x33,
+    ['4'] = 0x34, ['5'] = 0x35, ['6'] = 0x36, ['7'] = 0x37, ['8'] = 0x38, ['9'] = 0x39,
+}
+
+-- Define the function to press a key
+local function pressKey(key)
+    local shiftKeyCode = 0x10
+    local keyCode = AsciiKeys[key:lower()]
+
+    if keyCode then
+        if key == key:lower() then
+            keypress(keyCode)
+        else
+            keypress(shiftKeyCode)
+            keypress(keyCode)
+            keyrelease(shiftKeyCode)
+        end
+    else
+        local symbolKeyCodes = {
+            ["!"] = 0x31, ["@"] = 0x32, ["$"] = 0x34, ["%"] = 0x35,
+            ["^"] = 0x36, ["&"] = 0x37, ["*"] = 0x38, ["("] = 0x39
+        }
+        local symbolKeyCode = symbolKeyCodes[key]
+        if symbolKeyCode then
+            keypress(shiftKeyCode)
+            keypress(symbolKeyCode)
+            keyrelease(shiftKeyCode)
+        end
+    end
+end
+
+local function ReleaseKeys()
+    for _, keyCode in pairs(AsciiKeys) do
+        keyrelease(keyCode)
+    end
+end
+
+local function parseSong(notes)
+    local finalNotesList = {}
+    local curNote = ""
+    local inBracket = false
+    local inBraces = false
+
+    for char in notes:gmatch(".") do
+        if char == "[" then
+            inBracket = true
+            curNote = ""
+        elseif char == "{" then
+            inBraces = true
+            curNote = ""
+        elseif char == "]" then
+            inBracket = false
+            finalNotesList[#finalNotesList + 1] = curNote
+            curNote = ""
+        elseif char == "}" then
+            inBraces = false
+            finalNotesList[#finalNotesList + 1] = "{" .. curNote .. "}"
+            curNote = ""
+        elseif inBracket or inBraces then
+            curNote = curNote .. char
+        else
+            if char ~= " " and char ~= "-" and char ~= "|" and char ~= "\n"  and char ~= "#" then
+                finalNotesList[#finalNotesList + 1] = char
+            end
+        end
+    end
+
+    return finalNotesList
+end
+
+-- Define the function to play a single iteration of notes
+local function playSingleIteration(notes)
+    for _, sheet in ipairs(notes) do
+        if sheet:sub(1, 1) ~= "{" then
+            if sheet:sub(1, 1) ~= "[" then
+                -- Handle regular notes
+                for char in sheet:gmatch(".") do
+                    xpcall(function()
+                        pressKey(char)
+                    end, function()
+                    end)
+                end
+            else
+                -- Handle notes within brackets
+                local BrackedNotes = sheet:sub(2, #sheet - 1)
+                for char in BrackedNotes:gmatch(".") do
+                    xpcall(function()
+                        pressKey(char)
+                    end, function()
+                    end)
+                end
+            end
+        else
+            -- Handle notes within braces
+            local BracedNotes = sheet:sub(2, #sheet - 1)
+            for char in BracedNotes:gmatch(".") do
+                xpcall(function()
+                    pressKey(char)
+                    wait(0.000005)
+                end, function()
+                end)
+            end
+        end
+    end
+end
+
+-- Function for Play Key
+local function PlayTheKeys()
+    local notes = parseSong(KeyTextLabel.Text)
+    playSingleIteration({notes[singleNoteIndex]})
+    local text = KeyTextLabel.Text
+    if text:sub(1, 1) == "[" then
+        local bracketEnd = text:find("]", 1, true)
+        if bracketEnd then
+            text = text:sub(bracketEnd + 1)
+        end
+    elseif text:sub(1, 1) == "{" then
+        local braceEnd = text:find("}", 1, true)
+        if braceEnd then
+            text = text:sub(braceEnd + 1)
+        end
+    elseif #text > 0 then
+        text = text:sub(2)
+    end
+
+    local removed = false
+
+    repeat
+        local newText, count = text:gsub("^[%s#%-|]+", "")
+        if count > 0 then
+            removed = true
+            text = newText
+        else
+            removed = false
+        end
+    until not removed
+
+    KeyTextLabel.Text = text
+end
+
+--Play Key
+KeyPlayLeft.MouseButton1Down:Connect(PlayTheKeys)
+KeyPlayRight.MouseButton1Down:Connect(PlayTheKeys)
+
+--Release Key
+KeyPlayLeft.MouseButton1Up:Connect(ReleaseKeys)
+KeyPlayRight.MouseButton1Up:Connect(ReleaseKeys)
+
+local function KeySaveFrame()
+    if KeyTextSavedF.Visible == false then
+        KeyTextSavedF.Visible = true
+        HideTextBox.Text = "Hide"
+    else
+        KeyTextSavedF.Visible = false
+        HideTextBox.Text = "Show"
+    end
+end
+
+HideTextBox.MouseButton1Click:Connect(KeySaveFrame)
+
+local function HideListF()
+    if List.Visible == false then
+        List.Visible = true
+        Add.Visible = true
+        Remove.Visible = true
+    else
+        List.Visible = false
+        Add.Visible = false
+        Remove.Visible = false
+    end
+end
+
+HideSheet.MouseButton1Click:Connect(HideListF)
+
+KeyReset.MouseButton1Click:Connect(function()
+    KeyTextLabel.Text = ""
+    KeyTextLabel.Text = KeyTextbox.Text
+    singleNoteIndex = 1
+    local texts = KeyTextLabel.Text
+    local trimmedText = texts:gsub("^%s*", "")
+    trimmedText = trimmedText:gsub("\n", " ")
+    KeyTextLabel.Text = trimmedText
+end)
+
+local SheetFile = readfile("PandaHubPresser/Sheets.txt")
+local Sheetss = game:GetService("HttpService"):JSONDecode(SheetFile)
+
+for i, Sheet in ipairs(Sheetss) do
+  local Add_Song = MusicBar:Clone(Sheet.name, Sheet.sheet)
+  local SheetNotes = Instance.new('StringValue')
+  local HeheName = Instance.new('StringValue')
+  Add_Song.Parent = List
+  Add_Song.Name = Sheet.name
+  Add_Song.Text = Sheet.name
+  SheetNotes.Value = Sheet.sheet
+  HeheName.Value = Sheet.name
+  Add_Song.MouseButton1Click:Connect(function()
+      hehelabel.Text = HeheName.Value
+      KeyTextLabel.Text = SheetNotes.Value
+      singleNoteIndex = 1
+      local texts = SheetNotes.Value
+      local trimmedText = texts:gsub("^%s*", "")
+      trimmedText = trimmedText:gsub("\n", " ")
+      KeyTextLabel.Text = trimmedText
+  end)
+  Add_Song.Visible = true
+ totalButtons = totalButtons + 1
+    local buttonHeight = 19
+    local contentHeight = totalButtons * (buttonHeight + 5)
+    List.CanvasSize = UDim2.new(0, 0, 0, contentHeight)
+end
+
+local function SaveTheSheet()
+    local SavedName = KeyTextBoxName.Text
+    local CharSheet = KeyTextbox.Text
+
+    local isNameInUse = false
+    for _, child in pairs(List:GetChildren()) do
+        if child.Name == SavedName then
+            isNameInUse = true
+            break
+        end
+    end
+
+    if isNameInUse then
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "Panda Hub",
+            Text = "The name is already in use. Please choose a different name.",
+            Duration = 5,
+            Button1 = "Okay"
+        })
+    elseif KeyTextBoxName.Text == "" then
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "Panda Hub",
+            Text = "Please enter a name.",
+            Duration = 5,
+            Button1 = "Okay"
+        })
+    else
+        local Sheets = game:GetService("HttpService"):JSONDecode(readfile("PandaHubPresser/Sheets.txt"))
+
+        table.insert(Sheets, {
+            name = SavedName,
+            sheet = CharSheet
+        })
+
+        writefile("PandaHubPresser/Sheets.txt", game:GetService("HttpService"):JSONEncode(Sheets))
+
+        local SheetChar = Instance.new('StringValue')
+        local SheetName = Instance.new('StringValue')
+        local Add_Song = MusicBar:Clone()
+        SheetChar.Parent = MusicBar
+        Add_Song.Parent = List
+        Add_Song.Name = SavedName
+        Add_Song.Text = SavedName
+        SheetChar.Value = CharSheet
+        SheetName.Value = SavedName
+        Add_Song.MouseButton1Click:Connect(function()
+            hehelabel.Text = SheetName.Value
+            KeyTextLabel.Text = ""
+            KeyTextLabel.Text = SheetChar.Value
+            singleNoteIndex = 1
+            local texts = SheetChar.Value
+            local trimmedText = texts:gsub("^%s*", "")
+            trimmedText = trimmedText:gsub("\n", " ")
+            KeyTextLabel.Text = trimmedText
+        end)
+
+        Add_Song.Visible = true
+        totalButtons = totalButtons + 1
+        local buttonHeight = 19
+        local contentHeight = totalButtons * (buttonHeight + 5)
+        List.CanvasSize = UDim2.new(0, 0, 0, contentHeight)
+    end
+end
+
+SaveButton.MouseButton1Click:Connect(SaveTheSheet)
+
+Add.Changed:Connect(function()
+  local searchText = Add.Text:lower()
+  for _, Add_Bar in ipairs(List:GetChildren()) do
+if Add_Bar:IsA("TextButton") then
+  if Add_Bar.Text:lower():find(searchText) then
+Add_Bar.Visible = true
+  else
+Add_Bar.Visible = false
+  end
+end
+  end
+end)
+
+Remove.MouseButton1Click:Connect(function()
+local nameLabelText = hehelabel.Text
+if nameLabelText == "" or nameLabelText == nil then
+game:GetService("StarterGui"):SetCore("SendNotification", {
+Title = "Panda Hub",
+Text = "Please choose a song to remove.",
+Duration = 2,
+})
+else
+local function callback(text)
+    if text == "Yes" then
+        local sheets = game:GetService("HttpService"):JSONDecode(readfile("PandaHubPresser/Sheets.txt"))
+        for i, Sheet in ipairs(sheets) do
+            if Sheet.name == nameLabelText then
+                table.remove(sheets, i)
+                writefile("PandaHubPresser/Sheets.txt", game:GetService("HttpService"):JSONEncode(sheets))
+                
+                -- Remove the button from the GUI
+                for _, Add_Bar in ipairs(List:GetChildren()) do
+                    if Add_Bar:IsA("TextButton") and Add_Bar.Name == nameLabelText then
+                        Add_Bar:Destroy()
+                        totalButtons = totalButtons - 1
+                        local buttonHeight = 19
+                        local contentHeight = totalButtons * (buttonHeight + 5)
+                        List.CanvasSize = UDim2.new(0, 0, 0, contentHeight)
+                        break
+                    end
+                end
+
+                hehelabel.Text = ""
+                KeyTextLabel.Text = ""
+                break
+            end
+        end
+    elseif text == "No" then
+        print("No")
+    end
+end
+
+local notificationBindable = Instance.new("BindableFunction")
+notificationBindable.OnInvoke = callback
+
+game.StarterGui:SetCore("SendNotification", {
+    Title = "Confirmation",
+    Text = "Are you sure you want to remove the song: " .. nameLabelText .. "?",
+    Icon = "",
+    Duration = math.huge,
+    Button1 = "Yes",
+    Button2 = "No",
+    Callback = notificationBindable,
+})
+end
+end)
+
+local UserInputService = game:GetService("UserInputService")
+
+local keysToHold = {
+    Enum.KeyCode.LeftBracket,
+    Enum.KeyCode.RightBracket,
+    Enum.KeyCode.Minus,
+    Enum.KeyCode.Equals,
+    Enum.KeyCode.Comma,
+    Enum.KeyCode.Slash,
+    Enum.KeyCode.Semicolon,
+    Enum.KeyCode.Quote,
+    Enum.KeyCode.RightAlt,
+    Enum.KeyCode.RightControl
+}
+
+local holding = {}
+local wasHolding = {}
+
+for _, key in ipairs(keysToHold) do
+    holding[key] = false
+    wasHolding[key] = false
+end
+
+UserInputService.InputBegan:Connect(function(input)
+    for _, key in ipairs(keysToHold) do
+        if input.KeyCode == key then
+            if not holding[key] then
+                PlayTheKeys()
+            end
+            holding[key] = true
+            break
+        end
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    for _, key in ipairs(keysToHold) do
+        if input.KeyCode == key then
+            if holding[key] then
+                ReleaseKeys()
+            end
+            holding[key] = false
+            break
+        end
+    end
+end)
+
+
+local HideKeyPressGui = Instance.new("ScreenGui")
+HideKeyPressGui.Parent = game.CoreGui
+HideKeyPressGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+local HideKeyPressButton = Instance.new("TextButton")
+HideKeyPressButton.Text = "Hide"
+HideKeyPressButton.Size = UDim2.new(0, 100, 0, 50)
+HideKeyPressButton.Position = UDim2.new(0, 12, 0, 130)
+HideKeyPressButton.Parent = HideKeyPressGui
+HideKeyPressButton.BackgroundColor3 = Color3.fromRGB(197, 140, 110)
+HideKeyPressButton.BorderColor3 = Color3.fromRGB(97, 50, 25)
+HideKeyPressButton.BorderSizePixel = 2
+HideKeyPressButton.TextColor3 = Color3.fromRGB(255, 230, 204)
+HideKeyPressButton.Font = Enum.Font.Garamond
+HideKeyPressButton.TextSize = 20
+
+local player = game.Players.LocalPlayer
+local input = game:GetService("UserInputService")
+
+local function mobile()
+    return input.TouchEnabled
+end
+
+if mobile() then
+
+local touchOffsetX, touchOffsetY
+
+HideKeyPressButton.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.Touch then
+        touchOffsetX = input.Position.X - HideKeyPressButton.Position.X.Offset
+        touchOffsetY = input.Position.Y - HideKeyPressButton.Position.Y.Offset
+    end
+end)
+
+HideKeyPressButton.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.Touch then
+        HideKeyPressButton.Position = UDim2.new(0, input.Position.X - touchOffsetX, 0, input.Position.Y - touchOffsetY)
+    end
+end)
+
+HideKeyPressButton.MouseButton1Click:Connect(function()
+    if KeyPresserFrame.Visible == false then
+        KeyPresserFrame.Visible = true
+        HideKeyPressButton.Text = "Hide"
+    else
+        KeyPresserFrame.Visible = false
+        HideKeyPressButton.Text = "Show"
+    end
+end)
+
+else -- if PC
+
+local mouseOffsetX, mouseOffsetY
+local isDragging = false
+
+HideKeyPressButton.MouseButton1Down:Connect(function()
+    isDragging = true
+    local mousePos = game.Players.LocalPlayer:GetMouse().Position
+    mouseOffsetX = mousePos.X - HideKeyPressButton.Position.X.Offset
+    mouseOffsetY = mousePos.Y - HideKeyPressButton.Position.Y.Offset
+end)
+
+game.Players.LocalPlayer:GetMouse().Move:Connect(function()
+    if isDragging then
+        local mousePos = game.Players.LocalPlayer:GetMouse().Position
+        HideKeyPressButton.Position = UDim2.new(0, mousePos.X - mouseOffsetX, 0, mousePos.Y - mouseOffsetY)
+    end
+end)
+
+HideKeyPressButton.MouseButton1Up:Connect(function()
+    isDragging = false
+end)
+
+HideKeyPressButton.MouseButton1Click:Connect(function()
+    if KeyPresserFrame.Visible == false then
+        KeyPresserFrame.Visible = true
+        HideKeyPressButton.Text = "Hide"
+    else
+        KeyPresserFrame.Visible = false
+        HideKeyPressButton.Text = "Show"
+    end
+end)
+
+end
