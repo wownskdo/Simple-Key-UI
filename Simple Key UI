@@ -9,7 +9,7 @@ local name = "Auto Piano v3.5.1: Key System"
 local scripturl = "https://github.com/wownskdo/Simple-Key-UI/raw/refs/heads/main/Choose%20Script"
 
 -- URL for premium players (must be a raw URL)
-local allowedPlayersUrl = "https://gist.githubusercontent.com/MADNESSTEST/17f5ac5a7024d89f882e6ad5ca4f350e/raw/3d659acbabfb295d940d7b94463282368d5f54b8/premium%2520players"
+local allowedPlayersUrl = "https://github.com/wownskdo/Simple-Key-UI/raw/refs/heads/main/Premium%20Players"
 
 -- Folder Name for saving the key in the executor workspace
 local foldername = "PandaHub"
