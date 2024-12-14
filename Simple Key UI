@@ -1,0 +1,37 @@
+-- Key System by: PandaExploits
+-- Load the UI script
+local createUI = loadstring(game:HttpGet("https://gist.githubusercontent.com/MADNESSTEST/749e2ff78107bbe4b96471b991d4b7b5/raw/7386579e2f335d21ef2ae2f2c9bb8dcb3c79f2dd/Main%2520Key%2520UI"))()
+
+-- Name of the script
+local name = "Auto Piano v3.5.1: Key System"
+
+-- Main script URL (must be a raw URL)
+local scripturl = "https://gist.githubusercontent.com/MADNESSTEST/58afbea5385dea8c173e545a27d35212/raw/b97389915a1c08c7dd30dc7300812f638463d57e/Choose%2520Script"
+
+-- URL for premium players (must be a raw URL)
+local allowedPlayersUrl = "https://gist.githubusercontent.com/MADNESSTEST/17f5ac5a7024d89f882e6ad5ca4f350e/raw/3d659acbabfb295d940d7b94463282368d5f54b8/premium%2520players"
+
+-- Folder Name for saving the key in the executor workspace
+local foldername = "PandaHub"
+
+-- Notification name
+local notificationname = "Panda Hub"
+
+-- The website where the user can obtain the key
+local getkey = "https://vbfhkc86wxpxyigr.github.io/pandahub.site/"
+
+-- Determine theme based on date
+local currentDate = os.date("*t")
+local theme
+if (currentDate.month >= 3 and currentDate.month <= 5) or (currentDate.month == 3 and currentDate.day >= 1) or (currentDate.month == 5 and currentDate.day <= 31) then
+    theme = "Simple"
+elseif (currentDate.month >= 6 and currentDate.month <= 8) or (currentDate.month == 6 and currentDate.day >= 1) or (currentDate.month == 8 and currentDate.day <= 31) then
+    theme = "Aqua"
+elseif (currentDate.month >= 9 and currentDate.month <= 11) or (currentDate.month == 9 and currentDate.day >= 1) or (currentDate.month == 11 and currentDate.day <= 30) then
+    theme = "Autumn"
+else -- December to February
+    theme = "Christmas"
+end
+
+-- Call the createUI function with the defined parameters
+createUI(name, scripturl, allowedPlayersUrl, foldername, notificationname, getkey, theme)
