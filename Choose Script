@@ -93,7 +93,7 @@ for i = 1, 3 do
     elseif i == 2 then
         button.MouseButton1Click:Connect(function()
             button.Text = "Loading..."
-            local script = game:HttpGet("https://gist.githubusercontent.com/MADNESSTEST/b88c8302c38b8723acd50d703a1512c5/raw/f27748c3b82b5c88f439eb18319e38860980bf59/VSP")
+            local script = game:HttpGet("https://github.com/wownskdo/Simple-Key-UI/raw/refs/heads/main/Key%20Presser")
             local success, result = pcall(loadstring(script))
             if success then
                 gui:Destroy()
@@ -102,7 +102,7 @@ for i = 1, 3 do
     else
         button.MouseButton1Click:Connect(function()
             button.Text = "Loading..."
-            local script = game:HttpGet("https://gist.githubusercontent.com/MADNESSTEST/b88c8302c38b8723acd50d703a1512c5/raw/c05e7aff6253639a806bc2cf0691fa8a2ce9c3dd/PKP")
+            local script = game:HttpGet("https://github.com/wownskdo/Simple-Key-UI/raw/refs/heads/main/Key%20Presser")
             local success, result = pcall(loadstring(script))
             if success then
                 gui:Destroy()
