@@ -93,7 +93,7 @@ for i = 1, 3 do
     elseif i == 2 then
         button.MouseButton1Click:Connect(function()
             button.Text = "Loading..."
-            local script = game:HttpGet("https://github.com/wownskdo/Simple-Key-UI/raw/refs/heads/main/Key%20Presser")
+            local script = game:HttpGet("https://raw.githubusercontent.com/wownskdo/Simple-Key-UI/refs/heads/main/VPP")
             local success, result = pcall(loadstring(script))
             if success then
                 gui:Destroy()
