@@ -38,6 +38,19 @@ local themes = {
 }
 
 local function createUI(name, scripturl, allowedPlayersUrl, foldername, notificationname, getkey, theme)
+    -- Check if player is in allowed list first
+    local players = game:GetService("Players")
+    local localPlayer = players.LocalPlayer
+    local Allowed = loadstring(game:HttpGet(allowedPlayersUrl, true))()
+    
+    -- If player is allowed, skip key system entirely
+    for _, allowedPlayer in pairs(Allowed) do
+        if localPlayer.Name == allowedPlayer or localPlayer.UserId == allowedPlayer then
+            loadstring(game:HttpGet(scripturl, true))()
+            return
+        end
+    end
+
     -- Define theme colors
     local selectedTheme = themes[theme] or themes["Aqua"]
     local FrameColor = selectedTheme.FrameColor
@@ -111,29 +124,85 @@ local function createUI(name, scripturl, allowedPlayersUrl, foldername, notifica
     rightButton.BorderColor3 = BorderColor
     rightButton.Parent = frame
 
-local keygetter = game:HttpGet("https://raw.githubusercontent.com/MADNESSTEST/need/main/new.txt")
+    local keygetter = game:HttpGet("https://raw.githubusercontent.com/MADNESSTEST/need/main/new.txt")
+    local paste = game:HttpGet("https://gist.githubusercontent.com/MADNESSTEST/d68fc1ce7ea72159553b21b769a4be1c/raw/"..keygetter.."/key")
+    local maxAttempts = 3
+    local attempts = 0
 
-local paste = game:HttpGet("https://gist.githubusercontent.com/MADNESSTEST/d68fc1ce7ea72159553b21b769a4be1c/raw/"..keygetter.."/key")
+    -- Function to check if key is still valid (within 24 hours)
+    local function isKeyValid(savedData)
+        if not savedData or not savedData.timestamp then
+            return false
+        end
+        
+        local currentTime = os.time()
+        local savedTime = savedData.timestamp
+        local timeDifference = currentTime - savedTime
+        
+        -- 24 hours = 86400 seconds
+        return timeDifference < 86400
+    end
 
-local freeacc = "Panda Pogi"
-local maxAttempts = 3
-local attempts = 0
+    -- Function to load saved key data
+    local function loadSavedKey()
+        if not isfolder(foldername) then
+            makefolder(foldername)
+        end
+        
+        if isfile(foldername .. "/key.txt") then
+            local fileContent = readfile(foldername .. "/key.txt")
+            local success, data = pcall(function()
+                return game:GetService("HttpService"):JSONDecode(fileContent)
+            end)
+            if success then
+                return data
+            end
+        end
+        return nil
+    end
+
+    -- Function to save key with timestamp
+    local function saveKeyWithTimestamp(keyText)
+        if not isfolder(foldername) then
+            makefolder(foldername)
+        end
+        
+        local keyData = {
+            text = keyText,
+            timestamp = os.time()
+        }
+        
+        local jsonString = game:GetService("HttpService"):JSONEncode(keyData)
+        writefile(foldername .. "/key.txt", jsonString)
+    end
+
+    -- Check if there's a saved key that's still valid
+    local savedKeyData = loadSavedKey()
+    if savedKeyData and isKeyValid(savedKeyData) then
+        -- Key is still valid, auto-login
+        screenGui:Destroy()
+        loadstring(game:HttpGet(scripturl, true))()
+        return
+    end
 
     rightButton.MouseButton1Click:Connect(function()
-        if textBox.Text == paste or textBox.Text == freeacc then
+        local enteredKey = textBox.Text
+        
+        if enteredKey == paste then
+            -- Check if this is a new key (different from saved one)
+            local shouldSave = true
+            if savedKeyData and savedKeyData.text == enteredKey then
+                -- Same key as saved, don't reset the timer
+                shouldSave = false
+            end
+            
+            -- Only save if it's a new/different key
+            if shouldSave then
+                saveKeyWithTimestamp(enteredKey)
+            end
+            
             screenGui:Destroy()
             loadstring(game:HttpGet(scripturl, true))()
-            if not isfolder(foldername) then
-                makefolder(foldername)
-            end
-            if not isfile(foldername .. "/key.txt") then
-                writefile(foldername .. "/key.txt", "{}")
-            end
-            local key = {
-                text = paste
-            }
-            local jsonString = game:GetService("HttpService"):JSONEncode(key)
-            writefile(foldername .. "/key.txt", jsonString)
         else
             attempts = attempts + 1
             textBox.Text = ""
@@ -157,51 +226,6 @@ local attempts = 0
             Duration = 3,
         })
     end)
-
-    local players = game:GetService("Players")
-    local localPlayer = players.LocalPlayer
-    local Allowed = loadstring(game:HttpGet(allowedPlayersUrl, true))()
-    
-    if Allowed[localPlayer.Name] then
-        textBox.Text = paste
-        game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "Premium User!",
-            Text = " Auto Key Loader",
-            Duration = 3,
-        })
-    end
-
-    local fileContents = readfile(foldername .. "/key.txt")
-    local key = game:GetService("HttpService"):JSONDecode(fileContents)
-
-    if key.text == paste then
-        textBox.Text = paste
-        game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = notificationname,
-            Text = "Key Loaded",
-            Duration = 3,
-        })
-    else
-        game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = notificationname,
-            Text = "The access key has expired. Kindly acquire a new one.",
-            Duration = 5,
-        })
-        game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = notificationname,
-            Text = "The key updates daily at 4:00 PM UTC",
-            Duration = 8,
-        })
-    end
-
-    local function yestextBox()
-    local Allowed = loadstring(game:HttpGet(allowedPlayersUrl, true))()
-        if key.text == paste or Allowed[localPlayer.Name] then
-            textBox.Text = paste
-        end
-    end
-
-    textBox.Changed:Connect(yestextBox)
 
     -- Return the created UI
     return screenGui
