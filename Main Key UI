@@ -199,6 +199,11 @@ local function createUI(name, scripturl, allowedPlayersUrl, foldername, notifica
             -- Only save if it's a new/different key
             if shouldSave then
                 saveKeyWithTimestamp(enteredKey)
+                game:GetService("StarterGui"):SetCore("SendNotification", {
+                    Title = "Key Saved!",
+                    Text = "Key will reset in 24 hours",
+                    Duration = 5,
+                })
             end
             
             screenGui:Destroy()
