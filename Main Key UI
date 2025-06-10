@@ -201,7 +201,7 @@ local function createUI(name, scripturl, allowedPlayersUrl, foldername, notifica
                 saveKeyWithTimestamp(enteredKey)
                 game:GetService("StarterGui"):SetCore("SendNotification", {
                     Title = "Key Saved!",
-                    Text = "Key will reset in 24 hours",
+                    Text = "Key will reset after 24 hours",
                     Duration = 5,
                 })
             end
